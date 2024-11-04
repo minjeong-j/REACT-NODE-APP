@@ -1,9 +1,9 @@
 import './App.css';
-
-import PostList from './components/PostLists';
+import Router from './share/Router';
+// import PostList from './components/PostLists';
 
 function App() {
-  return <PostList />;
+  return <Router />;
 }
 
 export default App;
