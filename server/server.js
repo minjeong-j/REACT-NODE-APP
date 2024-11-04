@@ -1,0 +1,58 @@
+const express = require('express');
+const db = require('./db');
+const app = express();
+app.use(express.json()); // JSON 요청을 처리하기 위해 필요
+
+// 게시글 목록 조회 API
+app.get('/api/posts', (req, res) => {
+  const query = 'SELECT * FROM posts';
+  db.query(query, (err, results) => {
+    if (err) {
+      return res.status(500).send('Error fetching posts');
+    }
+    res.json(results);
+  });
+});
+
+// 게시글 작성 API
+app.post('/api/posts', (req, res) => {
+  const { title, content } = req.body;
+  const query = 'INSERT INTO posts (title, content) VALUES (?, ?)';
+  db.query(query, [title, content], (err, result) => {
+    if (err) {
+      return res.status(500).send('Error creating post');
+    }
+    res.status(201).send('Post created successfully');
+  });
+});
+
+// 게시글 수정 API
+app.put('/api/posts/:id', (req, res) => {
+  const { id } = req.params;
+  const { title, content } = req.body;
+  const query = 'UPDATE posts SET title = ?, content = ? WHERE id = ?';
+  db.query(query, [title, content, id], (err, result) => {
+    if (err) {
+      return res.status(500).send('Error updating post');
+    }
+    res.send('Post updated successfully');
+  });
+});
+
+// 게시글 삭제 API
+app.delete('/api/posts/:id', (req, res) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM posts WHERE id = ?';
+  db.query(query, [id], (err, result) => {
+    if (err) {
+      return res.status(500).send('Error deleting post');
+    }
+    res.send('Post deleted successfully');
+  });
+});
+
+// 서버 실행
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
