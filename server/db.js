@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
-  host: '%',
+  host: 'localhost',
   user: 'nodejs',
   password: 'ReactNode1!',
   database: 'my_database'

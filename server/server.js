@@ -1,6 +1,9 @@
 const express = require('express');
+const cors = require('cors');  // CORS 패키지 추가
 const db = require('./db');
 const app = express();
+
+app.use(cors());  // CORS 미들웨어 추가
 app.use(express.json()); // JSON 요청을 처리하기 위해 필요
 
 // 게시글 목록 조회 API
@@ -23,6 +26,21 @@ app.post('/api/posts', (req, res) => {
       return res.status(500).send('Error creating post');
     }
     res.status(201).send('Post created successfully');
+  });
+});
+
+// 게시글 상세 정보 가져오기
+app.get('/api/posts/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ message: '서버 오류' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ message: '게시글을 찾을 수 없습니다' });
+    }
+    res.json(results[0]);
   });
 });
 
@@ -52,7 +70,7 @@ app.delete('/api/posts/:id', (req, res) => {
 });
 
 // 서버 실행
-const PORT = 5000;
+const PORT = 5001;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
