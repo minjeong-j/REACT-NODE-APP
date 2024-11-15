@@ -32,16 +32,28 @@ app.post('/api/posts', (req, res) => {
 // 게시글 상세 정보 가져오기
 app.get('/api/posts/:id', (req, res) => {
   const { id } = req.params;
-  db.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
+
+  // 조회수 증가 쿼리
+  db.query('UPDATE posts SET view_cnt = view_cnt + 1 WHERE id = ?', [id], (err) => {
     if (err) {
-      console.error(err);
+      console.error('조회수 증가 오류:', err);
       return res.status(500).json({ message: '서버 오류' });
     }
-    if (results.length === 0) {
-      return res.status(404).json({ message: '게시글을 찾을 수 없습니다' });
-    }
-    res.json(results[0]);
-  });
+
+    // 게시글 정보 가져오기
+    db.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
+      if (err) {
+        console.error(err);
+        return res.status(500).json({ message: '서버 오류' });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ message: '게시글을 찾을 수 없습니다' });
+      }
+      console.log(`게시글 조회 성공: ${results[0]}`);
+      res.json(results[0]);
+    });
+   }); //조회수 증가 쿼리
+  
 });
 
 // 게시글 수정 API
