@@ -1,9 +1,9 @@
 // src/components/PostList.js
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Table, Button } from 'react-bootstrap';
 // import {useNavigate} from 'react-router-dom';
 import { Link } from 'react-router-dom';  // 링크 추가
-import { useNavigate } from 'react-router-dom'; // 추가: navigate 사용
 
 function PostList() {
   // 게시물 데이터를 저장할 상태 변수
@@ -17,24 +17,44 @@ function PostList() {
   }, []);  // 처음 한 번만 실행
 
   return (
-    <div>
-      <h1>게시판</h1>
-      <div>
+    <div style={{ width: '80%', margin: '0 auto' }} className="my-5">
+       {/* 게시판 제목과 버튼을 가로로 배치 */}
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h1 className="mt-3">게시판</h1>  
         {/* 글 작성 페이지로 이동 */}
         <Link to="/postform">
-          <button>글 작성</button>
+           <Button variant="primary">글쓰기</Button>
         </Link>
       </div>
-      <ul>
-        {posts.map(post => (
-          <li key={post.id}>
-            <h3>{post.title}</h3>
-            <p>{post.content}</p>
-            {/* 추가 */}
-            <Link to={`/post/${post.id}`}>상세보기</Link>
-          </li>
-        )) }
-      </ul>
+
+       <Table bordered hover>
+        <thead> 
+          <tr>
+            <th>번호</th>
+            <th>제목</th>
+            <th>내용</th>
+            <th>작성일</th>
+            <th>조회</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {posts.map((post, index) => (
+            <tr key={post.id}>
+              <td>{index + 1}</td>
+              <td>
+                <Link to={`/post/${post.id}`}>
+                  {post.title}
+                </Link>
+              </td>
+              <td>{post.content}</td>
+              <td>{new Date(post.created_at).toLocaleDateString()}</td>
+              <td>{post.view_cnt}</td>
+            </tr>
+          )) }
+        </tbody>
+      </Table>
+
     </div>
   );
 }
