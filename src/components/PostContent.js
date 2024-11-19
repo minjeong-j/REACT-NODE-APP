@@ -10,11 +10,28 @@ const PostContent = () => {
   const navigate = useNavigate(); // navigate 변수 선언
   const [post, setPost] = useState(null);
 
+  /*
   useEffect(() => {
     axios.get(`http://localhost:5001/api/posts/${id}`)
       .then(response => setPost(response.data))
       .catch(error => console.error('게시글 불러오기 오류:', error));
   }, [id]);
+  */
+  
+  useEffect(() => {
+  // 게시글 데이터 가져오기
+  console.log("### useEffect 실행됨");
+  axios.get(`http://localhost:5001/api/posts/${id}`)
+    .then(response => {
+      setPost(response.data);
+
+      // 조회수 증가 API 호출
+      console.log("### 조회수 증가 API 호출");
+      axios.patch(`http://localhost:5001/api/posts/${id}/view`)
+        .catch(error => console.error('조회수 증가 오류:', error));
+    })
+    .catch(error => console.error('게시글 불러오기 오류:', error));
+}, [id]);
 
   if (!post) return <div>로딩 중...</div>;
 
