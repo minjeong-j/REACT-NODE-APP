@@ -9,14 +9,6 @@ const PostContent = () => {
   const { id } = useParams();
   const navigate = useNavigate(); // navigate 변수 선언
   const [post, setPost] = useState(null);
-
-  /*
-  useEffect(() => {
-    axios.get(`http://localhost:5001/api/posts/${id}`)
-      .then(response => setPost(response.data))
-      .catch(error => console.error('게시글 불러오기 오류:', error));
-  }, [id]);
-  */
   
   useEffect(() => {
   // 게시글 데이터 가져오기

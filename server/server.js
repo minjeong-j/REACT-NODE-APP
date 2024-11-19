@@ -45,7 +45,6 @@ app.get('/api/posts/:id', (req, res) => {
       console.log(`### 게시글 조회 성공: ${results[0]}`);
       res.json(results[0]);
     });
-  //  }); //조회수 증가 쿼리
 });
 
 // 조회수 증가 API 생성
