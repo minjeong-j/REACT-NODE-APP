@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { deletePost } from '../share/api'; // api.js에서 함수 불러오기
 import axios from 'axios';
 import { Link } from 'react-router-dom';  // 링크 추가
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 const PostContent = () => {
   const { id } = useParams();
@@ -87,21 +88,57 @@ const PostContent = () => {
 
 
   return (
-    <div>
-      <h2>{post.title}</h2>
-      <p>{post.content}</p>
-      <p><strong>조회수:</strong> {post.view_cnt}</p> {/* 조회수 표시 */}
-      <p><strong>작성일:</strong> {new Date(post.created_at).toLocaleString()}</p>
-       {/* 버튼 추가 */}
-      <button onClick={handleEdit}>Edit</button>
-      <button onClick={handleDelete}>Delete</button>
-      <div>
-        <Link to={"/"}>
-           게시글 목록
-        </Link>
-      </div>
-    </div>
+    <Container style={{ maxWidth: '800px', marginTop: '50px' }}>
+      <h2 className="mb-4">{post.title}</h2>
+      <Row className="mb-4">
+        {/* 조회수와 작성일을 같은 Row에 배치 */}
+        <Col md="6">
+          <p>
+            <strong>조회수:</strong> {post.view_cnt}
+          </p>
+        </Col>
+        <Col md="6" className="text-end">
+          <p>
+            <strong>작성일:</strong> {new Date(post.created_at).toLocaleString()}
+          </p>
+        </Col>
+      </Row>
+      <Row className="mb-3">
+        <Col>
+          {/* 내용에 테두리 추가 */}
+          <div
+            style={{
+              border: '1px solid #ccc', // 테두리 색상
+              borderRadius: '8px', // 테두리 둥글게
+              padding: '16px', // 내용과 테두리 간 간격
+              backgroundColor: '#f9f9f9', // 배경 색상
+              minHeight: '350px', // 최소 높이를 350px로 설정
+            }}>
+              <p>{post.content}</p>
+          </div>
+        </Col>
+      </Row>
+
+      <Row className="mt-4">
+        {/* 목록으로 돌아가기 버튼을 하단 왼쪽에 배치 */}
+        <Col md="6">
+          <Link to="/">
+            <Button variant="secondary">목록으로 돌아가기</Button>
+          </Link>
+        </Col>
+
+        <Col className="d-flex justify-content-end">
+          <Button variant="primary" className="me-2" onClick={handleEdit}>
+            수정
+          </Button>
+          <Button variant="danger" onClick={handleDelete}>
+            삭제
+          </Button>
+        </Col>
+      </Row>
+    </Container>
   );
 };
+
 
 export default PostContent;
