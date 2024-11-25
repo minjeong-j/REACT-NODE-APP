@@ -17,14 +17,24 @@ app.get('/api/posts', (req, res) => {
   });
 });
 
-// 게시글 작성 API
-app.post('/api/posts', (req, res) => {
+// 검증 미들웨어 작성 - 게시글 작성과 수정 부분
+const validatePost = (req, res, next) => {
+  const { title, content } = req.body;
+  if (!title || !content || title.trim() === '' || content.trim() === '') {
+    return res.status(400).json({ message: '제목과 내용을 모두 입력해야 합니다.' });
+  }
+  next();
+};
+
+// 게시글 작성 API, validatePost 추가
+app.post('/api/posts', validatePost, (req, res) => {
   const { title, content } = req.body;
   const query = 'INSERT INTO posts (title, content) VALUES (?, ?)';
   db.query(query, [title, content], (err, result) => {
     if (err) {
       return res.status(500).send('Error creating post');
     }
+    // 데이터 저장 로직
     res.status(201).send('Post created successfully');
   });
 });
@@ -61,10 +71,10 @@ app.patch('/api/posts/:id/view', (req, res) => {
 });
 
 
-// 게시글 수정 API
-app.put('/api/posts/:id', (req, res) => {
+// 게시글 수정 API, validatePost 추가
+app.put('/api/posts/:id', validatePost, (req, res) => {
   const { id } = req.params;
-  const { title, content } = req.body;
+  const { title, content } = req.body;  
   const query = 'UPDATE posts SET title = ?, content = ? WHERE id = ?';
   db.query(query, [title, content, id], (err, result) => {
     if (err) {
